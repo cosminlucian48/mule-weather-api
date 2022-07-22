@@ -1,0 +1,41 @@
+{
+    "location": {
+        "name": "Bacau",
+        "region": "Bacau",
+        "country": "Romania",
+        "lat": 46.57,
+        "lon": 26.9,
+        "tz_id": "Europe/Bucharest",
+        "localtime_epoch": 1658498020,
+        "localtime": "2022-07-22 16:53"
+    },
+    "current": {
+        "last_updated_epoch": 1658497500,
+        "last_updated": "2022-07-22 16:45",
+        "temp_c": 33.0,
+        "temp_f": 91.4,
+        "is_day": 1,
+        "condition": {
+            "text": "Sunny",
+            "icon": "//cdn.weatherapi.com/weather/64x64/day/113.png",
+            "code": 1000
+        },
+        "wind_mph": 10.5,
+        "wind_kph": 16.9,
+        "wind_degree": 350,
+        "wind_dir": "N",
+        "pressure_mb": 1015.0,
+        "pressure_in": 29.97,
+        "precip_mm": 0.0,
+        "precip_in": 0.0,
+        "humidity": 28,
+        "cloud": 0,
+        "feelslike_c": 31.0,
+        "feelslike_f": 87.7,
+        "vis_km": 10.0,
+        "vis_miles": 6.0,
+        "uv": 8.0,
+        "gust_mph": 17.7,
+        "gust_kph": 28.4
+    }
+}

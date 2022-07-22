@@ -1,0 +1,12 @@
+#%RAML 1.0 ResourceType
+get?:
+  displayName: <<resourcePathName>>
+  description: <<get-description>>
+  responses:
+    200:
+      body:
+        <<content-type>>:
+          description: <<get-response-description>>
+          type: <<get-response-type>>
+          examples: <<get-response-examples>>
+            

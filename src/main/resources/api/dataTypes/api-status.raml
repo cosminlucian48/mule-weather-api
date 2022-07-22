@@ -1,0 +1,14 @@
+#%RAML 1.0 Library
+types:
+  api-status:
+    type: object
+    properties:
+      status:
+        type: string
+        required: true
+      version:
+        type: string
+        required: false
+      timestamp:
+        type: datetime
+        required: true

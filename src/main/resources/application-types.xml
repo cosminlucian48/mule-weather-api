@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="current_weather" format="json">
+      <types:shape format="weave" example="examples/current_weather.json"><![CDATA[%dw 2.0
+
+type current_weather = {|
+  location: {|
+    name: String, 
+    region: String, 
+    country: String, 
+    lat: Number {"typeId": "double"}, 
+    lon: Number {"typeId": "double"}, 
+    tz_id: String, 
+    localtime_epoch: Number {"typeId": "int"}, 
+    localtime: String
+  |}, 
+  current: {|
+    last_updated_epoch: Number {"typeId": "int"}, 
+    last_updated: String, 
+    temp_c: Number {"typeId": "double"}, 
+    temp_f: Number {"typeId": "double"}, 
+    is_day: Number {"typeId": "int"}, 
+    condition: {|
+      text: String, 
+      icon: String, 
+      code: Number {"typeId": "int"}
+    |}, 
+    wind_mph: Number {"typeId": "double"}, 
+    wind_kph: Number {"typeId": "double"}, 
+    wind_degree: Number {"typeId": "int"}, 
+    wind_dir: String, 
+    pressure_mb: Number {"typeId": "double"}, 
+    pressure_in: Number {"typeId": "double"}, 
+    precip_mm: Number {"typeId": "double"}, 
+    precip_in: Number {"typeId": "double"}, 
+    humidity: Number {"typeId": "int"}, 
+    cloud: Number {"typeId": "int"}, 
+    feelslike_c: Number {"typeId": "double"}, 
+    feelslike_f: Number {"typeId": "double"}, 
+    vis_km: Number {"typeId": "double"}, 
+    vis_miles: Number {"typeId": "double"}, 
+    uv: Number {"typeId": "double"}, 
+    gust_mph: Number {"typeId": "double"}, 
+    gust_kph: Number {"typeId": "double"}
+  |}
+|} {"example": "{\\\"location\\\":{\\\"name\\\":\\\"Bacau\\\",\\\"region\\\":\\\"Bacau\\\",\\\"country\\\":\\\"Romania\\\",\\\"lat\\\":46.57,\\\"lon\\\":26.9,\\\"tz_id\\\":\\\"Europe\\/Bucharest\\\",\\\"localtime_epoch\\\":1658498020,\\\"localtime\\\":\\\"2022-07-22 16:53\\\"},\\\"current\\\":{\\\"last_updated_epoch\\\":1658497500,\\\"last_updated\\\":\\\"2022-07-22 16:45\\\",\\\"temp_c\\\":33.0,\\\"temp_f\\\":91.4,\\\"is_day\\\":1,\\\"condition\\\":{\\\"text\\\":\\\"Sunny\\\",\\\"icon\\\":\\\"\\/\\/cdn.weatherapi.com\\/weather\\/64x64\\/day\\/113.png\\\",\\\"code\\\":1000},\\\"wind_mph\\\":10.5,\\\"wind_kph\\\":16.9,\\\"wind_degree\\\":350,\\\"wind_dir\\\":\\\"N\\\",\\\"pressure_mb\\\":1015.0,\\\"pressure_in\\\":29.97,\\\"precip_mm\\\":0.0,\\\"precip_in\\\":0.0,\\\"humidity\\\":28,\\\"cloud\\\":0,\\\"feelslike_c\\\":31.0,\\\"feelslike_f\\\":87.7,\\\"vis_km\\\":10.0,\\\"vis_miles\\\":6.0,\\\"uv\\\":8.0,\\\"gust_mph\\\":17.7,\\\"gust_kph\\\":28.4}}"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="current_weather_output" format="json">
+      <types:shape format="weave" example="examples/current_weather_output.json"><![CDATA[%dw 2.0
+
+type current_weather_output = {|
+  city: String, 
+  country: String, 
+  temperature: Number {"typeId": "double"}, 
+  wind_speed: Number {"typeId": "double"}
+|} {"example": "{\\\"city\\\":\\\"Bacau\\\",\\\"country\\\":\\\"Romania\\\",\\\"temperature\\\":33.0,\\\"wind_speed\\\":16.9}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#1f47b695-cd41-46f7-a4d5-14f3765f5c1e">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="current_weather"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="current_weather_output"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

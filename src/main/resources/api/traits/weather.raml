@@ -1,0 +1,15 @@
+#%RAML 1.0 Trait
+
+queryParameters:  
+  key:
+    type: string
+    description: API key generated on the weatherApi dashboard.
+    example: 94f7c42cab7e4e409b690150221111
+    required: true
+  city:
+    type: string
+    description: The city from which the user wants to check the weather.
+    example: Paris
+    default: Paris
+    required: true
+      

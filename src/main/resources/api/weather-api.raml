@@ -1,0 +1,41 @@
+#%RAML 1.0
+version: v1
+title: Weather API
+
+documentation:
+  - !include documentation/api-doc.raml
+protocols:
+  - HTTPS
+uses:
+  status: /dataTypes/api-status.raml
+  weather: /dataTypes/weather.raml
+
+resourceTypes:
+  generic-resource: !include resourceType/generic-resource-type.raml
+
+traits:
+  weather: !include /traits/weather.raml
+  error-response: !include /traits/errors-trait/error-trait.raml
+
+/api-status:
+  is: [error-response]
+  get:
+  type:
+    generic-resource:
+      get-description: API health check
+      content-type: application/json
+      get-response-description: Response with API status object
+      get-response-type: status.api-status
+      get-response-examples: 
+        example: !include /examples/200-get-api-status.json
+/weather:
+  is: [weather]
+  get:
+  type:
+    generic-resource:
+      get-description: This resource will return a string that contains the weather for a specific city.
+      content-type: application/json
+      get-response-description: Response with API weather object.
+      get-response-type: weather.sentence-weather
+      get-response-examples: 
+        example: !include /examples/200-get-weather.json
