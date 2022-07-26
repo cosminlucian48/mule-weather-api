@@ -52,6 +52,13 @@
 			<version>1.5.11</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
+		<dependency>
+			<groupId>11f9a715-cc06-49b8-b871-84cd46a163ef</groupId>
+			<artifactId>weather-api</artifactId>
+			<version>1.0.3</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
+		</dependency>
 	</dependencies>
 
 	<repositories>

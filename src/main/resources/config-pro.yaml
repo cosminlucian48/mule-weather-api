@@ -1,0 +1,7 @@
+http: 
+  weather: 
+    protocol: "HTTPS"
+    host: "api.weatherapi.com"
+    basePath: "v1"
+    current: "current.json"
+    forecast: "forecast.json"

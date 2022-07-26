@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<sub-flow name="current-weather-subflow" doc:id="bd65a443-213b-4ce7-845a-f43518ee80c6" >
+		<logger level="INFO" doc:name="Logger" doc:id="eae26f4e-4879-44f2-9d70-4ed71e0ea591" message="#[attributes.queryParams]" />
+		<http:request method="GET" doc:name="request-current-weather" doc:id="ec08bf02-33c7-4e54-8256-393d8d932931" config-ref="WeatherAPI-request-config" path="${http.weather.current}">
+			<error-mapping sourceType="HTTP:UNAUTHORIZED" targetType="APP:UNAUTHORIZED" />
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"key" : attributes.headers.key
+}]]]></http:headers>
+			<http:query-params><![CDATA[#[output application/java
+---
+{
+	"q" : attributes.queryParams.city
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="1f47b695-cd41-46f7-a4d5-14f3765f5c1e">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	city: payload.location.name,
+	country: payload.location.country,
+	temperature: payload.current.temp_c,
+	wind_speed: payload.current.wind_kph
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables>
+			</ee:variables>
+		</ee:transform>
+		<ee:transform>
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+import * from dw::util::Coercions
+output application/json
+---
+{
+  weather: "Today in "++ toString(payload.city) ++ " from " ++ toString(payload.country)++ " were " ++ toString(payload.temperature) ++ "C degrees, and a wind speed of " ++ toString(payload.wind_speed) ++ "KM/HR."
+}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+	</sub-flow>
+</mule>
