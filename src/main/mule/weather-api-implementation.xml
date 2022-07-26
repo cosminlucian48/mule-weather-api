@@ -6,7 +6,6 @@
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 	<sub-flow name="current-weather-subflow" doc:id="bd65a443-213b-4ce7-845a-f43518ee80c6" >
-		<logger level="INFO" doc:name="Logger" doc:id="eae26f4e-4879-44f2-9d70-4ed71e0ea591" message="#[attributes.queryParams]" />
 		<http:request method="GET" doc:name="request-current-weather" doc:id="ec08bf02-33c7-4e54-8256-393d8d932931" config-ref="WeatherAPI-request-config" path="${http.weather.current}">
 			<error-mapping sourceType="HTTP:UNAUTHORIZED" targetType="APP:UNAUTHORIZED" />
 			<http:headers ><![CDATA[#[output application/java
@@ -23,13 +22,11 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<ee:transform doc:name="Transform Message" doc:id="1f47b695-cd41-46f7-a4d5-14f3765f5c1e">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
+import * from dw::util::Coercions
 output application/json
 ---
 {
-	city: payload.location.name,
-	country: payload.location.country,
-	temperature: payload.current.temp_c,
-	wind_speed: payload.current.wind_kph
+  weather: "Today in "++ toString(payload.location.name)++', ' ++ toString(payload.location.region) ++ " from " ++ toString(payload.location.country)++ " were " ++ toString(payload.current.temp_c) ++ "C degrees, and a wind speed of " ++ toString(payload.current.wind_kph) ++ "KM/HR."
 }]]></ee:set-payload>
 			</ee:message>
 			<ee:variables>

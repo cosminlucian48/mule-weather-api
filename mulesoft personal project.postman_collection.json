@@ -1,0 +1,110 @@
+{
+	"info": {
+		"_postman_id": "8f904e71-91b7-465b-9768-faa1c55e9d5e",
+		"name": "mulesoft personal project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "weather api",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api.weatherapi.com/v1/forecast.json?q=Bacausada",
+					"protocol": "https",
+					"host": [
+						"api",
+						"weatherapi",
+						"com"
+					],
+					"path": [
+						"v1",
+						"forecast.json"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "null",
+							"disabled": true
+						},
+						{
+							"key": "q",
+							"value": "Bacausada"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "weather local",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client-id",
+						"value": "dsadasda",
+						"type": "default",
+						"disabled": true
+					},
+					{
+						"key": "cleint-secret",
+						"value": "dsadas",
+						"type": "default",
+						"disabled": true
+					},
+					{
+						"key": "key",
+						"value": "null",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "",
+						"variables": ""
+					},
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/weather?city=Bacau",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"weather"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "null",
+							"disabled": true
+						},
+						{
+							"key": "city",
+							"value": "Bacau"
+						},
+						{
+							"key": "type",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
