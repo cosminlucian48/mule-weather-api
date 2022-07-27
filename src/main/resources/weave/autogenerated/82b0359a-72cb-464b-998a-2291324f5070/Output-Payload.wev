@@ -1,0 +1,7 @@
+%dw 2.0
+
+type auto_82b0359a_72cb_464b_998a_2291324f5070_Output_Payload = {
+  weather: String, 
+  _?: Any
+} {"description": "Response with API weather object."}
+

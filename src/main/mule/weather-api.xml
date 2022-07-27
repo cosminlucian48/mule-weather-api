@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
     <flow name="weather-api-main">
         <http:listener config-ref="weather-api-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -13,109 +14,109 @@
         <apikit:router config-ref="weather-api-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
-				<ee:transform doc:name="error-description" doc:id="f9b20a44-9e77-4656-bac7-6bacf99dba4c" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+                <ee:transform doc:name="error-description" doc:id="f9b20a44-9e77-4656-bac7-6bacf99dba4c">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {message: error.description}]]></ee:set-payload>
-					</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:NOT_FOUND">
-				<ee:transform doc:name="error-description" doc:id="26246e4a-aeb8-46b6-a93f-778dc4824179" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+                <ee:transform doc:name="error-description" doc:id="26246e4a-aeb8-46b6-a93f-778dc4824179">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {message: error.description}]]></ee:set-payload>
-					</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
-				<ee:transform doc:name="error-description" doc:id="83afaa95-460d-4129-a420-3f5c0282113c" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+                <ee:transform doc:name="error-description" doc:id="83afaa95-460d-4129-a420-3f5c0282113c">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {message: error.description}]]></ee:set-payload>
-					</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
-				<ee:transform doc:name="error-description" doc:id="723a94ba-8cbd-4e3e-932b-4914c3468da1" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+                <ee:transform doc:name="error-description" doc:id="723a94ba-8cbd-4e3e-932b-4914c3468da1">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {message: error.description}]]></ee:set-payload>
-					</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
-				<ee:transform doc:name="error-description" doc:id="7795efea-05dc-44b9-9da6-f21e2810fc35" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+                <ee:transform doc:name="error-description" doc:id="7795efea-05dc-44b9-9da6-f21e2810fc35">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {message: error.description}]]></ee:set-payload>
-					</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
-				<ee:transform doc:name="error-description" doc:id="9302c627-9436-4f89-8413-f9005681319a" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+                <ee:transform doc:name="error-description" doc:id="9302c627-9436-4f89-8413-f9005681319a">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {message: error.description}]]></ee:set-payload>
-					</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
             </on-error-propagate>
             <on-error-propagate enableNotifications="true" logException="true" doc:name="Copy_of_On Error Propagate" doc:id="9690b8b9-8dd7-40fc-a342-5bcb995d5321" type="HTTP:BAD_REQUEST">
-				<ee:transform doc:name="error-description" doc:id="ce7b15fd-08f3-4695-8430-974423ecab87" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+                <ee:transform doc:name="error-description" doc:id="ce7b15fd-08f3-4695-8430-974423ecab87">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {message: error.description}]]></ee:set-payload>
-					</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
             </on-error-propagate>
-			<on-error-propagate enableNotifications="true" logException="true" doc:name="Copy_of_On Error Propagate" doc:id="bd85ecd2-e1d8-49d2-9138-f743ac885fb8" type="HTTP:UNAUTHORIZED" >
-				<ee:transform doc:name="error-description" doc:id="be8d2006-fb7d-47e3-b9ef-b7c85f85c798" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+            <on-error-propagate enableNotifications="true" logException="true" doc:name="Copy_of_On Error Propagate" doc:id="bd85ecd2-e1d8-49d2-9138-f743ac885fb8" type="HTTP:UNAUTHORIZED">
+                <ee:transform doc:name="error-description" doc:id="be8d2006-fb7d-47e3-b9ef-b7c85f85c798">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ---
 {message: error.description}]]></ee:set-payload>
-					</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="httpStatus" ><![CDATA[400]]></ee:set-variable>
-					</ee:variables>
-				</ee:transform>
-			</on-error-propagate>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus"><![CDATA[400]]></ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
         </error-handler>
     </flow>
     <flow name="weather-api-console">
@@ -146,7 +147,7 @@ output application/json
         </error-handler>
     </flow>
     <flow name="get:\api-status:weather-api-config">
-        <ee:transform doc:name="api status">
+		<ee:transform doc:name="api status">
             <ee:message>
                 <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -160,5 +161,8 @@ output application/json
     </flow>
     <flow name="get:\weather:weather-api-config">
         <flow-ref doc:name="current-weather-subflow" doc:id="85834630-f700-4f53-9da3-703d06a4c4fb" name="current-weather-subflow" />
+    </flow>
+    <flow name="get:\weather\(request-type):weather-api-config">
+        <flow-ref doc:name="weather-subflow" doc:id="7e103495-3b3d-4687-a3ec-272034865c2f" name="weather-subflow" />
     </flow>
 </mule>

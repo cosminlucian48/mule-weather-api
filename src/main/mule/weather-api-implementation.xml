@@ -1,12 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
-	xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
-http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<sub-flow name="h2" doc:id="95d00318-00cc-4897-bc18-db2f7fbf0e55" >
+		<db:execute-ddl doc:name="Execute DDL" doc:id="2a508f68-3155-4067-b8a1-2424a7140e66" config-ref="Database_Config">
+			<db:sql><![CDATA[CREATE TABLE IF NOT EXISTS weather_t (
+
+  fullname VARCHAR(100) ,
+
+  weather VARCHAR(100) )]]></db:sql>
+		</db:execute-ddl>
+		<db:insert doc:name="Insert" doc:id="504363c8-057a-416b-9c59-19119cab0e6f" config-ref="Database_Config">
+			<db:sql><![CDATA[insert into weather_t (fullname, weather) values ('Bejan-Cosmin', 'Frumos');]]></db:sql>
+		</db:insert>
+		<db:select doc:name="Select" doc:id="ec13bb7e-114b-4f43-a2ae-c20a5edd0f68" config-ref="Database_Config">
+			<db:sql><![CDATA[select * from weather_t;]]></db:sql>
+		</db:select>
+		<logger level="INFO" doc:name="Logger" doc:id="99c6ff28-7485-44f1-8581-7e7c7904e332" message="#[payload]" />
+	</sub-flow>
+	<sub-flow name="weather-subflow" doc:id="82b0359a-72cb-464b-998a-2291324f5070" >
+		<choice doc:name="Choice" doc:id="5a992469-e80b-471c-89da-22e8f8b51be5" >
+			<when expression='#[attributes.uriParams."request-type"=="current"]'>
+				<flow-ref doc:name="current-weather-subflow" doc:id="85f22425-a93c-485a-9e58-588e4d51bd9d" name="current-weather-subflow"/>
+			</when>
+			<when expression='#[attributes.uriParams."request-type"=="forecast"]'>
+				<flow-ref doc:name="forecast-weather-subflow" doc:id="f715be62-4c1f-438c-a7ad-51f9bd04cc41" name="forecast-weather-subflow"/>
+			</when>
+			<otherwise >
+				<set-payload value='URI parameter can only be "current" or "forcast".' doc:name="Set Payload" doc:id="b9a641fe-944f-4893-b1a1-c9f21ae4e8f7" />
+			</otherwise>
+		</choice>
+	</sub-flow>
+	<sub-flow name="forecast-weather-subflow" doc:id="6abebdc5-c319-44cd-b12f-200ef30007b3" >
+		<http:request method="GET" doc:name="request-forecast-weather" doc:id="704c40e0-1c9b-4dce-af93-c14c5743434c" config-ref="WeatherAPI-request-config-forecast" path="${http.weather.forecast}" >
+			<error-mapping sourceType="HTTP:UNAUTHORIZED" targetType="APP:UNAUTHORIZED" />
+			<http:headers ><![CDATA[#[output application/java
+---
+{
+	"key" : attributes.headers.key
+}]]]></http:headers>
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	"q" : attributes.queryParams.city,
+	"days" : attributes.queryParams.days
+}]]]></http:query-params>
+		</http:request>
+		<ee:transform doc:name="Transform Message" doc:id="50010b13-eb2a-4fb0-b17a-d5fa24a0621c" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import * from dw::util::Coercions
+output application/json
+var date_temp = payload.forecast.forecastday map [$.date ++ " with " ++ $.day.avgtemp_c ++ "C"][0]
+---
+{
+  "weather": "Weather for the following days: " ++ (date_temp joinBy ", ") ++ "."
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
 	<sub-flow name="current-weather-subflow" doc:id="bd65a443-213b-4ce7-845a-f43518ee80c6" >
-		<http:request method="GET" doc:name="request-current-weather" doc:id="ec08bf02-33c7-4e54-8256-393d8d932931" config-ref="WeatherAPI-request-config" path="${http.weather.current}">
+		<http:request method="GET" doc:name="request-current-weather" doc:id="ec08bf02-33c7-4e54-8256-393d8d932931" config-ref="WeatherAPI-request-config-current" path="${http.weather.current}">
 			<error-mapping sourceType="HTTP:UNAUTHORIZED" targetType="APP:UNAUTHORIZED" />
 			<http:headers ><![CDATA[#[output application/java
 ---
@@ -32,16 +90,5 @@ output application/json
 			<ee:variables>
 			</ee:variables>
 		</ee:transform>
-		<ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-import * from dw::util::Coercions
-output application/json
----
-{
-  weather: "Today in "++ toString(payload.city) ++ " from " ++ toString(payload.country)++ " were " ++ toString(payload.temperature) ++ "C degrees, and a wind speed of " ++ toString(payload.wind_speed) ++ "KM/HR."
-}]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
 	</sub-flow>
 </mule>

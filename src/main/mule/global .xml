@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
     <http:listener-config name="weather-api-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
-    <apikit:config name="weather-api-config" api="resource::11f9a715-cc06-49b8-b871-84cd46a163ef:weather-api:1.0.3:raml:zip:weather-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-    <http:request-config name="WeatherAPI-request-config" doc:name="HTTP Request configuration" doc:id="9bb5d627-3085-45ed-9899-e21deb522966" basePath="${http.weather.basePath}">
+    <apikit:config name="weather-api-config" api="resource::11f9a715-cc06-49b8-b871-84cd46a163ef:weather-api:1.0.7:raml:zip:weather-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <http:request-config name="WeatherAPI-request-config-current" doc:name="HTTP Request configuration" doc:id="9bb5d627-3085-45ed-9899-e21deb522966" basePath="${http.weather.basePath}">
+        <http:request-connection protocol="${http.weather.protocol}" host="${http.weather.host}" />
+    </http:request-config>
+    <http:request-config name="WeatherAPI-request-config-forecast" doc:name="HTTP Request configuration" doc:id="3223eec3-4db4-4622-b541-47f7964e528e" basePath="${http.weather.basePath}">
         <http:request-connection protocol="${http.weather.protocol}" host="${http.weather.host}" />
     </http:request-config>
     <global-property doc:name="Global Property" doc:id="0bd0aa1d-1fd8-42f7-a105-7020724b2d21" name="globalProperty" value="pro" />
     <configuration-properties doc:name="Configuration properties" doc:id="98c475ff-1347-4e6d-9282-9aaf419ebdc9" file="config-${globalProperty}.yaml" />
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="a93a79d2-f49d-404c-afff-448350d583fe" >
+		<db:generic-connection url="jdbc:h2:file:C:\db\h2" driverClassName="org.h2.Driver" />
+	</db:config>
 </mule>
