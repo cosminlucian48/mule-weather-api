@@ -65,13 +65,6 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>11f9a715-cc06-49b8-b871-84cd46a163ef</groupId>
-			<artifactId>weather-api</artifactId>
-			<version>1.0.7</version>
-			<classifier>raml</classifier>
-			<type>zip</type>
-		</dependency>
-		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.4.200</version>
@@ -81,6 +74,13 @@
 			<artifactId>mule-db-connector</artifactId>
 			<version>1.12.1</version>
 			<classifier>mule-plugin</classifier>
+		</dependency>
+		<dependency>
+			<groupId>11f9a715-cc06-49b8-b871-84cd46a163ef</groupId>
+			<artifactId>weather-api</artifactId>
+			<version>1.0.10</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
 		</dependency>
 	</dependencies>
 

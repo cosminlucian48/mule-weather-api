@@ -7,20 +7,59 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
 http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
 	<sub-flow name="h2" doc:id="95d00318-00cc-4897-bc18-db2f7fbf0e55" >
+		<set-variable value="#[payload.fullname]" doc:name="fullname" doc:id="29a92824-65c4-4ae4-ad9b-aad3147ef47a" variableName="fullname"/>
+		<choice doc:name="Choice" doc:id="7de51773-8162-4dbe-8068-0d54d3346fef">
+			<when expression='#[attributes.uriParams."request-type"=="current"]'>
+				<flow-ref doc:name="current-weather-subflow" doc:id="e27ed30e-4368-4ea0-8dc0-d26635fa4fad" name="current-weather-subflow" />
+			</when>
+			<when expression='#[attributes.uriParams."request-type"=="forecast"]'>
+				<flow-ref doc:name="forecast-weather-subflow" doc:id="5a602c18-352a-4934-abfb-baffb6e2b66e" name="forecast-weather-subflow" />
+			</when>
+			<otherwise>
+				<ee:transform doc:name="Status" doc:id="24356b53-911f-4445-84d1-0f0e3cb9fdb3">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"status":"BAD"
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<set-variable value="#[payload.weather]" doc:name="weather-sentence" doc:id="854b935e-4202-43ee-ac6b-bf009b82d7ed" variableName="weather_sentence"/>
 		<db:execute-ddl doc:name="Execute DDL" doc:id="2a508f68-3155-4067-b8a1-2424a7140e66" config-ref="Database_Config">
-			<db:sql><![CDATA[CREATE TABLE IF NOT EXISTS weather_t (
+			<db:sql><![CDATA[CREATE TABLE IF NOT EXISTS weather_t3 (
 
-  fullname VARCHAR(100) ,
+  fullname VARCHAR(250) ,
 
-  weather VARCHAR(100) )]]></db:sql>
+  weather VARCHAR(250) ,
+  
+  time datetime)]]></db:sql>
 		</db:execute-ddl>
 		<db:insert doc:name="Insert" doc:id="504363c8-057a-416b-9c59-19119cab0e6f" config-ref="Database_Config">
-			<db:sql><![CDATA[insert into weather_t (fullname, weather) values ('Bejan-Cosmin', 'Frumos');]]></db:sql>
+			<db:sql><![CDATA[insert into weather_t3 (fullname, weather, time) values (:fullname, :weather, :time);]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	fullname: vars.fullname, 
+	weather: vars.weather_sentence,
+	time: now()
+}]]]></db:input-parameters>
 		</db:insert>
 		<db:select doc:name="Select" doc:id="ec13bb7e-114b-4f43-a2ae-c20a5edd0f68" config-ref="Database_Config">
-			<db:sql><![CDATA[select * from weather_t;]]></db:sql>
+			<db:sql><![CDATA[select * from weather_t3;]]></db:sql>
 		</db:select>
 		<logger level="INFO" doc:name="Logger" doc:id="99c6ff28-7485-44f1-8581-7e7c7904e332" message="#[payload]" />
+		<ee:transform doc:name="Status" doc:id="88e4119c-2fba-45c1-a24b-8f9b61c9f5af" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"status":"OK"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 	</sub-flow>
 	<sub-flow name="weather-subflow" doc:id="82b0359a-72cb-464b-998a-2291324f5070" >
 		<choice doc:name="Choice" doc:id="5a992469-e80b-471c-89da-22e8f8b51be5" >
